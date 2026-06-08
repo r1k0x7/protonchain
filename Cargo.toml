@@ -1,0 +1,107 @@
+[package]
+name = "proton-chain"
+version = "0.1.0"
+edition = "2021"
+authors = ["Proton Labs <dev@protonchain.io>"]
+description = "Proton Chain - L1 Multichain with Speed & Privacy"
+license = "MIT"
+
+[workspace]
+members = ["crates/*"]
+
+[dependencies]
+# Core
+tokio = { version = "1.35", features = ["full", "rt-multi-thread"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# Cryptography
+sha3 = "0.10"
+blake3 = "1.5"
+secp256k1 = { version = "0.28", features = ["global-context", "rand-std"] }
+ed25519-dalek = { version = "2.1", features = ["rand_core"] }
+rand = "0.8"
+chacha20poly1305 = "0.10"
+aes-gcm = "0.10"
+
+# Zero-Knowledge
+ark-bn254 = "0.4"
+ark-groth16 = "0.4"
+ark-snark = "0.4"
+ark-ff = "0.4"
+ark-ec = "0.4"
+ark-std = "0.4"
+ark-relations = "0.4"
+ark-r1cs-std = "0.4"
+ark-crypto-primitives = { version = "0.4", features = ["r1cs"] }
+
+# Consensus
+libp2p = { version = "0.53", features = ["quic", "kad", "gossipsub", "mdns", "noise", "yamux"] }
+libp2p-identity = "0.2"
+libp2p-core = "0.41"
+
+# WASM / Smart Contract
+wasmer = "4.2"
+wasmer-compiler-cranelift = "4.2"
+wasmtime = "16.0"
+
+# Database
+rocksdb = { version = "0.21", features = ["multi-threaded-cf"] }
+redb = "1.5"
+
+# Networking
+quinn = "0.10"
+rustls = { version = "0.21", features = ["dangerous_configuration"] }
+hyper = { version = "1.0", features = ["full"] }
+tower = "0.4"
+
+# Utilities
+dashmap = "5.5"
+parking_lot = "0.12"
+crossbeam = "0.8"
+rayon = "1.8"
+indexmap = "2.1"
+hex = "0.4"
+base64 = "0.21"
+bs58 = "0.5"
+uuid = { version = "1.6", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+async-trait = "0.1"
+futures = "0.3"
+stream-cancel = "0.8"
+
+# Metrics
+prometheus = "0.13"
+metrics = "0.22"
+metrics-exporter-prometheus = "0.13"
+
+[dev-dependencies]
+tokio-test = "0.4"
+criterion = { version = "0.5", features = ["html_reports"] }
+proptest = "1.4"
+mockall = "0.12"
+
+[[bench]]
+name = "consensus_bench"
+harness = false
+
+[[bench]]
+name = "zk_bench"
+harness = false
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.dev]
+opt-level = 1
+
+[profile.test]
+opt-level = 2
